@@ -3,16 +3,14 @@ import { useState, useEffect } from "react"
 import mqtt, { type MqttClient } from "mqtt"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Activity, Thermometer, Droplets, Zap, Power, Wifi, WifiOff } from "lucide-react"
 import { PowerSensorType, SwitchSensorType, TemperatureSensorType, WaterSensorType } from "@/types/sensor-types"
 import SwitchControlCard from "./SwitchControlCard"
 import TemperatureCard from "./TemperatureCard"
 import WaterCard from "./WaterCard"
 import PowerCard from "./PowerCard"
-import { formatTime } from "@/lib/utils"
+import { ref, onValue, off, query, orderByChild, limitToLast, getDatabase } from 'firebase/database';
+import app from '@/lib/firebase';
 
 export default function Dashboard() {
 	const [client, setClient] = useState<MqttClient | null>(null)
@@ -24,7 +22,9 @@ export default function Dashboard() {
 	const [temperatureData, setTemperatureData] = useState<TemperatureSensorType | null>(null)
 	const [waterLevelData, setWaterLevelData] = useState<WaterSensorType | null>(null)
 	const [powerData, setPowerData] = useState<PowerSensorType | null>(null)
-	const [messageHistory, setMessageHistory] = useState([])
+	const [messages, setMessages] = useState([]);
+	const [topicData, setTopicData] = useState({});
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		// Connect to MQTT broker via WebSocket
@@ -70,16 +70,6 @@ export default function Dashboard() {
 						break
 				}
 
-				// Add to message history
-				setMessageHistory((prev) => [
-					{
-						id: Date.now() + Math.random(),
-						topic,
-						data,
-						receivedAt: new Date().toISOString(),
-					},
-					...prev.slice(0, 19), // Keep only last 20 messages
-				])
 			} catch (error) {
 				console.error("Error parsing message:", error)
 			}
@@ -106,6 +96,40 @@ export default function Dashboard() {
 		}
 	}, [])
 
+
+	useEffect(() => {
+		// Listen to latest 50 messages
+		const database = getDatabase(app);
+		const messagesRef = ref(database, 'messages');
+		const messagesQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(50));
+
+		const unsubscribeMessages = onValue(messagesQuery, (snapshot) => {
+			const data = snapshot.val();
+			if (data) {
+				console.log(data)
+				const messageArray = Object.entries(data).map(([key, value]) => ({
+					id: key,
+					...value
+				})).sort((a, b) => b.timestamp - a.timestamp);
+				setMessages(messageArray);
+			}
+			setLoading(false);
+		});
+
+		// Listen to topics for latest values
+		const topicsRef = ref(database, 'topics');
+		const unsubscribeTopics = onValue(topicsRef, (snapshot) => {
+			const data = snapshot.val();
+			if (data) {
+				setTopicData(data);
+			}
+		});
+
+		return () => {
+			off(messagesRef, 'value', unsubscribeMessages);
+			off(topicsRef, 'value', unsubscribeTopics);
+		};
+	}, []);
 
 	return (
 		<div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
@@ -144,51 +168,6 @@ export default function Dashboard() {
 						<PowerCard powerData={powerData} />}
 				</div>
 
-				{/* Real-time Message Feed */}
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<Activity className="h-5 w-5" />
-							Real-time Data Feed
-						</CardTitle>
-						<CardDescription>Receiving data from IoT Control Center...</CardDescription>
-					</CardHeader>
-					<CardContent>
-						{messageHistory.length > 0 ? (
-							<ScrollArea className="h-96 w-full">
-								<div className="space-y-3">
-									{messageHistory.map((msg) => (
-										<Card key={msg.id} className="bg-muted/50">
-											<CardContent className="pt-4">
-												<div className="flex justify-between items-start mb-2">
-													<Badge variant="outline" className="text-xs">
-														{msg.topic}
-													</Badge>
-													<span className="text-xs text-muted-foreground">{formatTime(msg.receivedAt)}</span>
-												</div>
-												<div className="text-sm text-muted-foreground">
-													{msg.topic === "switch/state" &&
-														`State: ${msg.data.state ? "ON" : "OFF"}, Device: ${msg.data.device}`}
-													{msg.topic === "sensors/temperature" &&
-														`Temp: ${msg.data.temperature}°C, Humidity: ${msg.data.humidity}%, Location: ${msg.data.location}`}
-													{msg.topic === "sensors/waterlevel" &&
-														`Level: ${msg.data.level}%, Status: ${msg.data.status}, Location: ${msg.data.location}`}
-													{msg.topic === "sensors/power" &&
-														`Power: ${msg.data.power}W, Voltage: ${msg.data.voltage}V, Current: ${msg.data.current}A`}
-												</div>
-											</CardContent>
-										</Card>
-									))}
-								</div>
-							</ScrollArea>
-						) : (
-							<div className="text-center py-12 text-muted-foreground">
-								<Activity className="h-12 w-12 mx-auto mb-4 animate-pulse" />
-								<p className="text-lg">Waiting for sensor data...</p>
-							</div>
-						)}
-					</CardContent>
-				</Card>
 			</div>
 		</div>
 	)
