@@ -3,12 +3,57 @@ import { Badge } from "./ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { SwitchSensorType } from "@/types/sensor-types";
 import { formatTime } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { equalTo, getDatabase, off, limitToLast, onValue, orderByChild, query, ref } from "firebase/database";
+import app from "@/lib/firebase";
+import SwitchChart from "./SwitchChart";
 
 interface Props {
 	switchData: SwitchSensorType;
 }
 
 export default function SwitchControlCard({ switchData }: Props) {
+	const [messages, setMessages] = useState<SwitchSensorType[]>([])
+	useEffect(() => {
+		const database = getDatabase(app);
+		const messagesRef = ref(database, 'messages');
+
+		const specificTopic = "switch/state";
+		const messagesQuery = query(
+			messagesRef,
+			orderByChild('topic'),
+			equalTo(specificTopic),
+			limitToLast(50)
+		);
+
+		const unsubscribeMessages = onValue(messagesQuery, (snapshot) => {
+			const data = snapshot.val();
+
+			if (data) {
+				const messageArray = Object.entries(data).map(([key, value]: any[]) => ({
+					id: key,
+					...value
+				})).sort((a, b) => b.timestamp - a.timestamp);
+
+				let parsedArray: SwitchSensorType[] = []
+				messageArray.forEach((item) => {
+					try {
+						const parsed = JSON.parse(item.payload)
+						parsedArray.push(parsed)
+					} catch (err) {
+						console.log("🔥 Parse error for item:", item, err);
+					}
+				})
+				setMessages(parsedArray)
+			}
+		});
+
+
+		return () => {
+			off(messagesRef, 'value', unsubscribeMessages);
+		};
+	}, []);
+
 	return (
 		<Card className="relative overflow-hidden">
 			<CardHeader className="pb-3">
@@ -38,6 +83,7 @@ export default function SwitchControlCard({ switchData }: Props) {
 						<p className="text-sm">No data</p>
 					</div>
 				)}
+				<SwitchChart messages={messages} />
 			</CardContent>
 		</Card>
 

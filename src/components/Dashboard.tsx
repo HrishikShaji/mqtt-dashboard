@@ -106,8 +106,7 @@ export default function Dashboard() {
 		const unsubscribeMessages = onValue(messagesQuery, (snapshot) => {
 			const data = snapshot.val();
 			if (data) {
-				console.log(data)
-				const messageArray = Object.entries(data).map(([key, value]) => ({
+				const messageArray = Object.entries(data).map(([key, value]: any[]) => ({
 					id: key,
 					...value
 				})).sort((a, b) => b.timestamp - a.timestamp);
