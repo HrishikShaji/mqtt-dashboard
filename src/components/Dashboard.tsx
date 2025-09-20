@@ -7,6 +7,12 @@ import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Activity, Thermometer, Droplets, Zap, Power, Wifi, WifiOff } from "lucide-react"
+import { PowerSensorType, SwitchSensorType, TemperatureSensorType, WaterSensorType } from "@/types/sensor-types"
+import SwitchControlCard from "./SwitchControlCard"
+import TemperatureCard from "./TemperatureCard"
+import WaterCard from "./WaterCard"
+import PowerCard from "./PowerCard"
+import { formatTime } from "@/lib/utils"
 
 export default function Dashboard() {
 	const [client, setClient] = useState<MqttClient | null>(null)
@@ -14,10 +20,10 @@ export default function Dashboard() {
 	const [connectionStatus, setConnectionStatus] = useState("Disconnected")
 
 	// Sensor data states
-	const [switchData, setSwitchData] = useState(null)
-	const [temperatureData, setTemperatureData] = useState(null)
-	const [waterLevelData, setWaterLevelData] = useState(null)
-	const [powerData, setPowerData] = useState(null)
+	const [switchData, setSwitchData] = useState<SwitchSensorType | null>(null)
+	const [temperatureData, setTemperatureData] = useState<TemperatureSensorType | null>(null)
+	const [waterLevelData, setWaterLevelData] = useState<WaterSensorType | null>(null)
+	const [powerData, setPowerData] = useState<PowerSensorType | null>(null)
 	const [messageHistory, setMessageHistory] = useState([])
 
 	useEffect(() => {
@@ -100,32 +106,6 @@ export default function Dashboard() {
 		}
 	}, [])
 
-	const formatTime = (timestamp) => {
-		return new Date(timestamp).toLocaleTimeString()
-	}
-
-	const getStatusColor = (value, type) => {
-		switch (type) {
-			case "temperature":
-				if (value < 20) return "text-blue-600 dark:text-blue-400"
-				if (value > 30) return "text-red-600 dark:text-red-400"
-				return "text-green-600 dark:text-green-400"
-			case "waterLevel":
-				if (value < 20) return "text-red-600 dark:text-red-400"
-				if (value < 50) return "text-yellow-600 dark:text-yellow-400"
-				return "text-green-600 dark:text-green-400"
-			case "power":
-				return "text-purple-600 dark:text-purple-400"
-			default:
-				return "text-muted-foreground"
-		}
-	}
-
-	const getWaterLevelStatus = (level) => {
-		if (level < 20) return { text: "Critical", variant: "destructive" as const }
-		if (level < 50) return { text: "Low", variant: "secondary" as const }
-		return { text: "Normal", variant: "default" as const }
-	}
 
 	return (
 		<div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
@@ -151,151 +131,17 @@ export default function Dashboard() {
 				{/* Sensor Cards Grid */}
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 					{/* Switch Control Card */}
-					<Card className="relative overflow-hidden">
-						<CardHeader className="pb-3">
-							<CardTitle className="flex items-center gap-2 text-lg">
-								<Power className="h-5 w-5" />
-								Switch Control
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							{switchData ? (
-								<div className="space-y-4">
-									<div className="text-center">
-										<div
-											className={`text-3xl font-bold ${switchData.state ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
-										>
-											{switchData.state ? "ON" : "OFF"}
-										</div>
-										<Badge variant="outline" className="mt-2">
-											{switchData.device}
-										</Badge>
-									</div>
-									<div className="text-xs text-muted-foreground text-center">{formatTime(switchData.timestamp)}</div>
-								</div>
-							) : (
-								<div className="text-center py-8 text-muted-foreground">
-									<Activity className="h-8 w-8 mx-auto mb-2 animate-pulse" />
-									<p className="text-sm">No data</p>
-								</div>
-							)}
-						</CardContent>
-					</Card>
-
+					{switchData &&
+						<SwitchControlCard switchData={switchData} />}
 					{/* Temperature Card */}
-					<Card className="relative overflow-hidden">
-						<CardHeader className="pb-3">
-							<CardTitle className="flex items-center gap-2 text-lg">
-								<Thermometer className="h-5 w-5" />
-								Temperature
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							{temperatureData ? (
-								<div className="space-y-4">
-									<div className="text-center">
-										<div
-											className={`text-3xl font-bold ${getStatusColor(Number.parseFloat(temperatureData.temperature), "temperature")}`}
-										>
-											{temperatureData.temperature}°C
-										</div>
-										<div className="text-sm text-muted-foreground mt-1">Humidity: {temperatureData.humidity}%</div>
-									</div>
-									<Separator />
-									<div className="text-xs text-muted-foreground text-center space-y-1">
-										<div>{temperatureData.location}</div>
-										<div>{formatTime(temperatureData.timestamp)}</div>
-									</div>
-								</div>
-							) : (
-								<div className="text-center py-8 text-muted-foreground">
-									<Activity className="h-8 w-8 mx-auto mb-2 animate-pulse" />
-									<p className="text-sm">No data</p>
-								</div>
-							)}
-						</CardContent>
-					</Card>
-
+					{temperatureData &&
+						<TemperatureCard temperatureData={temperatureData} />}
 					{/* Water Level Card */}
-					<Card className="relative overflow-hidden">
-						<CardHeader className="pb-3">
-							<CardTitle className="flex items-center gap-2 text-lg">
-								<Droplets className="h-5 w-5" />
-								Water Level
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							{waterLevelData ? (
-								<div className="space-y-4">
-									<div className="text-center">
-										<div className={`text-3xl font-bold ${getStatusColor(waterLevelData.level, "waterLevel")}`}>
-											{waterLevelData.level}%
-										</div>
-										<Progress value={waterLevelData.level} className="mt-3" />
-									</div>
-									<Separator />
-									<div className="text-xs text-muted-foreground text-center space-y-1">
-										<div className="flex items-center justify-center gap-2">
-											<Badge {...getWaterLevelStatus(waterLevelData.level)}>
-												{getWaterLevelStatus(waterLevelData.level).text}
-											</Badge>
-										</div>
-										<div>Capacity: {waterLevelData.capacity}L</div>
-										<div>{formatTime(waterLevelData.timestamp)}</div>
-									</div>
-								</div>
-							) : (
-								<div className="text-center py-8 text-muted-foreground">
-									<Activity className="h-8 w-8 mx-auto mb-2 animate-pulse" />
-									<p className="text-sm">No data</p>
-								</div>
-							)}
-						</CardContent>
-					</Card>
-
+					{waterLevelData &&
+						<WaterCard waterLevelData={waterLevelData} />}
 					{/* Power Monitoring Card */}
-					<Card className="relative overflow-hidden">
-						<CardHeader className="pb-3">
-							<CardTitle className="flex items-center gap-2 text-lg">
-								<Zap className="h-5 w-5" />
-								Power Monitor
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							{powerData ? (
-								<div className="space-y-3">
-									<div className="grid grid-cols-2 gap-2 text-sm">
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">Voltage:</span>
-											<span className={getStatusColor(powerData.voltage, "power")}>{powerData.voltage}V</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">Current:</span>
-											<span className={getStatusColor(powerData.current, "power")}>{powerData.current}A</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">Power:</span>
-											<span className={getStatusColor(powerData.power, "power")}>{powerData.power}W</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">Frequency:</span>
-											<span className="text-purple-600 dark:text-purple-400">{powerData.frequency}Hz</span>
-										</div>
-									</div>
-									<Separator />
-									<div className="text-xs text-muted-foreground text-center space-y-1">
-										<div>PF: {powerData.powerFactor}</div>
-										<div>{formatTime(powerData.timestamp)}</div>
-									</div>
-								</div>
-							) : (
-								<div className="text-center py-8 text-muted-foreground">
-									<Activity className="h-8 w-8 mx-auto mb-2 animate-pulse" />
-									<p className="text-sm">No data</p>
-								</div>
-							)}
-						</CardContent>
-					</Card>
+					{powerData &&
+						<PowerCard powerData={powerData} />}
 				</div>
 
 				{/* Real-time Message Feed */}
