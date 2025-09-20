@@ -14,6 +14,7 @@ export interface PowerSensorType {
 	phase: string;
 	enabled: boolean;
 	monitoring: boolean;
+	timestamp: string;
 
 }
 
@@ -25,6 +26,7 @@ export interface WaterSensorType {
 	location: string;
 	enabled: boolean;
 	alertsEnabled: boolean;
+	timestamp: string;
 }
 
 export interface TemperatureSensorType {
@@ -33,4 +35,5 @@ export interface TemperatureSensorType {
 	sensor: string;
 	location: string;
 	enabled: boolean;
+	timestamp: string;
 }

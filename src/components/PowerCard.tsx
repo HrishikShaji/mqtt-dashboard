@@ -4,12 +4,58 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { PowerSensorType, SwitchSensorType, TemperatureSensorType } from "@/types/sensor-types";
 import { formatTime, getStatusColor } from "@/lib/utils";
 import { Separator } from "./ui/separator";
+import { useEffect, useState } from "react";
+import { equalTo, getDatabase, limitToLast, onValue, off, orderByChild, query, ref } from "firebase/database";
+import app from "@/lib/firebase";
+import PowerChart from "./PowerChart";
 
 interface Props {
 	powerData: PowerSensorType;
 }
 
 export default function PowerCard({ powerData }: Props) {
+	const [messages, setMessages] = useState<PowerSensorType[]>([])
+	useEffect(() => {
+		const database = getDatabase(app);
+		const messagesRef = ref(database, 'messages');
+
+		const specificTopic = "sensors/power";
+		const messagesQuery = query(
+			messagesRef,
+			orderByChild('topic'),
+			equalTo(specificTopic),
+			limitToLast(50)
+		);
+
+		const unsubscribeMessages = onValue(messagesQuery, (snapshot) => {
+			const data = snapshot.val();
+
+			if (data) {
+				const messageArray = Object.entries(data).map(([key, value]: any[]) => ({
+					id: key,
+					...value
+				})).sort((a, b) => b.timestamp - a.timestamp);
+
+				let parsedArray: PowerSensorType[] = []
+				messageArray.forEach((item) => {
+					try {
+						const parsed = JSON.parse(item.payload)
+						parsedArray.push(parsed)
+
+					} catch (err) {
+						console.log("🔥 Parse error for item:", item, err);
+					}
+				})
+				console.log(parsedArray)
+				setMessages(parsedArray)
+			}
+		});
+
+
+		return () => {
+			off(messagesRef, 'value', unsubscribeMessages);
+		};
+	}, []);
 	return (
 		<Card className="relative overflow-hidden">
 			<CardHeader className="pb-3">
@@ -51,6 +97,8 @@ export default function PowerCard({ powerData }: Props) {
 						<p className="text-sm">No data</p>
 					</div>
 				)}
+
+				<PowerChart messages={messages} />
 			</CardContent>
 		</Card>
 

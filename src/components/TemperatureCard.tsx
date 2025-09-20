@@ -4,12 +4,58 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { SwitchSensorType, TemperatureSensorType } from "@/types/sensor-types";
 import { formatTime, getStatusColor } from "@/lib/utils";
 import { Separator } from "./ui/separator";
+import { useEffect, useState } from "react";
+import { equalTo, getDatabase, limitToLast, onValue, off, orderByChild, query, ref } from "firebase/database";
+import app from "@/lib/firebase";
+import { useSidebar } from "./ui/sidebar";
+import TemperatureChart from "./TemperatureChart";
 
 interface Props {
 	temperatureData: TemperatureSensorType;
 }
 
 export default function TemperatureCard({ temperatureData }: Props) {
+	const [messages, setMessages] = useState<TemperatureSensorType[]>([])
+	useEffect(() => {
+		const database = getDatabase(app);
+		const messagesRef = ref(database, 'messages');
+
+		const specificTopic = "sensors/temperature";
+		const messagesQuery = query(
+			messagesRef,
+			orderByChild('topic'),
+			equalTo(specificTopic),
+			limitToLast(50)
+		);
+
+		const unsubscribeMessages = onValue(messagesQuery, (snapshot) => {
+			const data = snapshot.val();
+
+			if (data) {
+				const messageArray = Object.entries(data).map(([key, value]: any[]) => ({
+					id: key,
+					...value
+				})).sort((a, b) => b.timestamp - a.timestamp);
+
+				let parsedArray: TemperatureSensorType[] = []
+				messageArray.forEach((item) => {
+					try {
+						const parsed = JSON.parse(item.payload)
+						parsedArray.push(parsed)
+
+					} catch (err) {
+						console.log("🔥 Parse error for item:", item, err);
+					}
+				})
+				setMessages(parsedArray)
+			}
+		});
+
+
+		return () => {
+			off(messagesRef, 'value', unsubscribeMessages);
+		};
+	}, []);
 	return (
 		<Card className="relative overflow-hidden">
 			<CardHeader className="pb-3">
@@ -23,7 +69,7 @@ export default function TemperatureCard({ temperatureData }: Props) {
 					<div className="space-y-4">
 						<div className="text-center">
 							<div
-								className={`text-3xl font-bold ${getStatusColor(Number.parseFloat(temperatureData.temperature), "temperature")}`}
+								className={`text-3xl font-bold ${getStatusColor(temperatureData.temperature, "temperature")}`}
 							>
 								{temperatureData.temperature}°C
 							</div>
@@ -42,6 +88,7 @@ export default function TemperatureCard({ temperatureData }: Props) {
 					</div>
 				)}
 			</CardContent>
+			<TemperatureChart messages={messages} />
 		</Card>
 
 	)
