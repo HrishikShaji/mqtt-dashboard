@@ -1,4 +1,4 @@
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine } from "recharts"
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine, Legend } from "recharts"
 import { Gauge, AlertTriangle, CheckCircle, XCircle } from "lucide-react"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import type { WaterSensorType } from "@/types/sensor-types"
@@ -125,179 +125,182 @@ export default function WaterChart({ messages }: Props) {
 				<Gauge className="h-4 w-4" />
 				View Tank Levels
 			</DialogTrigger>
-			<DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+			<DialogContent className="min-w-[90vw]  max-h-[90vh] overflow-y-auto">
 				<DialogTitle className="flex gap-3 items-center text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
 					<Gauge className="h-5 w-5 text-blue-500" />
 					Tank Level Monitoring
 					<span className="text-sm font-normal text-gray-500">• {messages[0]?.location}</span>
 				</DialogTitle>
+				<div className="flex gap-5 ">
+					<div className="flex-1 bg-gray-50 w-full dark:bg-gray-900/50 rounded-xl p-6 mb-6">
+						<div className="h-[400px] w-full">
+							<ResponsiveContainer width="100%" height="100%">
+								<AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+									<defs>
+										<linearGradient id="levelGradient" x1="0" y1="0" x2="0" y2="1">
+											<stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+											<stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05} />
+										</linearGradient>
+									</defs>
+									<CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:stroke-gray-700" />
+									<XAxis
+										dataKey="time"
+										className="text-xs fill-gray-500"
+										angle={-45}
+										textAnchor="end"
+										height={60}
+										stroke="#9ca3af"
+									/>
+									<YAxis
+										className="text-xs fill-gray-500"
+										label={{
+											value: "Level (units)",
+											angle: -90,
+											position: "insideLeft",
+											style: { textAnchor: "middle", fill: "#6b7280" },
+										}}
+										domain={[0, capacity]}
+										stroke="#9ca3af"
+									/>
+									<Tooltip content={<CustomTooltip />} />
 
-				<div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6 mb-6">
-					<div className="h-[400px] w-full">
-						<ResponsiveContainer width="100%" height="100%">
-							<AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-								<defs>
-									<linearGradient id="levelGradient" x1="0" y1="0" x2="0" y2="1">
-										<stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-										<stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05} />
-									</linearGradient>
-								</defs>
-								<CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:stroke-gray-700" />
-								<XAxis
-									dataKey="time"
-									className="text-xs fill-gray-500"
-									angle={-45}
-									textAnchor="end"
-									height={60}
-									stroke="#9ca3af"
-								/>
-								<YAxis
-									className="text-xs fill-gray-500"
-									label={{
-										value: "Level (units)",
-										angle: -90,
-										position: "insideLeft",
-										style: { textAnchor: "middle", fill: "#6b7280" },
-									}}
-									domain={[0, capacity]}
-									stroke="#9ca3af"
-								/>
-								<Tooltip content={<CustomTooltip />} />
+									<ReferenceLine
+										y={capacity}
+										stroke="#ef4444"
+										strokeDasharray="5 5"
+										strokeOpacity={0.7}
+										label={{
+											value: "Max",
+											position: "insideTopRight",
+											style: { fill: "#ef4444", fontSize: "10px", fontWeight: "500" },
+										}}
+									/>
+									<ReferenceLine
+										y={capacity * 0.9}
+										stroke="#f59e0b"
+										strokeDasharray="3 3"
+										strokeOpacity={0.5}
+										label={{
+											value: "90%",
+											position: "insideTopRight",
+											style: { fill: "#f59e0b", fontSize: "10px", fontWeight: "500" },
+										}}
+									/>
+									<ReferenceLine
+										y={capacity * 0.1}
+										stroke="#f97316"
+										strokeDasharray="3 3"
+										strokeOpacity={0.5}
+										label={{
+											value: "10%",
+											position: "insideTopRight",
+											style: { fill: "#f97316", fontSize: "10px", fontWeight: "500" },
+										}}
+									/>
 
-								<ReferenceLine
-									y={capacity}
-									stroke="#ef4444"
-									strokeDasharray="5 5"
-									strokeOpacity={0.7}
-									label={{
-										value: "Max",
-										position: "insideTopRight",
-										style: { fill: "#ef4444", fontSize: "10px", fontWeight: "500" },
-									}}
-								/>
-								<ReferenceLine
-									y={capacity * 0.9}
-									stroke="#f59e0b"
-									strokeDasharray="3 3"
-									strokeOpacity={0.5}
-									label={{
-										value: "90%",
-										position: "insideTopRight",
-										style: { fill: "#f59e0b", fontSize: "10px", fontWeight: "500" },
-									}}
-								/>
-								<ReferenceLine
-									y={capacity * 0.1}
-									stroke="#f97316"
-									strokeDasharray="3 3"
-									strokeOpacity={0.5}
-									label={{
-										value: "10%",
-										position: "insideTopRight",
-										style: { fill: "#f97316", fontSize: "10px", fontWeight: "500" },
-									}}
-								/>
-
-								<Area
-									type="monotone"
-									dataKey="level"
-									stroke="#3b82f6"
-									strokeWidth={2}
-									fill="url(#levelGradient)"
-									fillOpacity={1}
-								/>
-							</AreaChart>
-						</ResponsiveContainer>
-					</div>
-				</div>
-
-				<div className="space-y-6">
-					{/* Current Status */}
-					<div className="grid grid-cols-4 gap-4">
-						<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
-							<div className="text-sm text-gray-500 mb-1">Current Level</div>
-							<div className="text-2xl font-bold text-blue-500 mb-1">
-								{levelStats.current} / {capacity}
-							</div>
-							<div className="text-sm text-gray-500">{((levelStats.current / capacity) * 100).toFixed(1)}% filled</div>
-						</div>
-						<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
-							<div className="text-sm text-gray-500 mb-1">Sensor Type</div>
-							<div className="text-lg font-semibold text-gray-900 dark:text-gray-100">{messages[0]?.sensor}</div>
-						</div>
-						<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
-							<div className="text-sm text-gray-500 mb-1">Monitoring</div>
-							<div className="space-y-1">
-								<div className="text-xs">
-									{messages[messages.length - 1]?.enabled ? (
-										<span className="text-green-500 font-medium">✓ Sensor Active</span>
-									) : (
-										<span className="text-red-500 font-medium">✗ Sensor Inactive</span>
-									)}
-								</div>
-								<div className="text-xs">
-									{messages[messages.length - 1]?.alertsEnabled ? (
-										<span className="text-green-500 font-medium">🔔 Alerts On</span>
-									) : (
-										<span className="text-yellow-500 font-medium">🔕 Alerts Off</span>
-									)}
-								</div>
-							</div>
-						</div>
-						<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
-							<div className="text-sm text-gray-500 mb-1">Total Readings</div>
-							<div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{messages.length}</div>
+									<Area
+										type="monotone"
+										dataKey="level"
+										stroke="#3b82f6"
+										strokeWidth={2}
+										fill="url(#levelGradient)"
+										fillOpacity={1}
+									/>
+									<Legend />
+								</AreaChart>
+							</ResponsiveContainer>
 						</div>
 					</div>
 
-					<div className="grid grid-cols-2 gap-6">
-						{/* Level Statistics */}
-						<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
-							<h3 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100 mb-4">
-								<Gauge className="h-4 w-4 text-blue-500" />
-								Level Statistics
-							</h3>
-							<div className="grid grid-cols-3 gap-3">
-								<div className="text-center p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-									<div className="text-sm text-gray-500 mb-1">Average</div>
-									<div className="text-lg font-bold text-blue-500">{levelStats.avg.toFixed(0)}</div>
-									<div className="text-xs text-gray-500">{levelStats.avgPercentage.toFixed(1)}%</div>
+					<div className="space-y-6 flex-1">
+						{/* Current Status */}
+						<div className="grid grid-cols-4 gap-4">
+							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
+								<div className="text-sm text-gray-500 mb-1">Current Level</div>
+								<div className="text-2xl font-bold text-blue-500 mb-1">
+									{levelStats.current} / {capacity}
 								</div>
-								<div className="text-center p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
-									<div className="text-sm text-gray-500 mb-1">Minimum</div>
-									<div className="text-lg font-bold text-green-500">{levelStats.min}</div>
-									<div className="text-xs text-gray-500">{((levelStats.min / capacity) * 100).toFixed(1)}%</div>
-								</div>
-								<div className="text-center p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-									<div className="text-sm text-gray-500 mb-1">Maximum</div>
-									<div className="text-lg font-bold text-purple-500">{levelStats.max}</div>
-									<div className="text-xs text-gray-500">{((levelStats.max / capacity) * 100).toFixed(1)}%</div>
-								</div>
+								<div className="text-sm text-gray-500">{((levelStats.current / capacity) * 100).toFixed(1)}% filled</div>
 							</div>
-						</div>
-
-						{/* Status Distribution */}
-						<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
-							<h3 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100 mb-4">
-								<AlertTriangle className="h-4 w-4 text-orange-500" />
-								Status Distribution
-							</h3>
-							<div className="grid grid-cols-2 gap-3">
-								{Object.entries(statusCounts).map(([status, count]) => (
-									<div key={status} className="p-3 rounded-lg text-center border border-gray-100 dark:border-gray-800">
-										<div className="flex items-center justify-center gap-2 mb-2">
-											{getStatusIcon(status)}
-											<div className="text-sm font-medium capitalize text-gray-900 dark:text-gray-100">{status}</div>
-										</div>
-										<div className="text-xl font-bold" style={{ color: getStatusColor(status) }}>
-											{count}
-										</div>
-										<div className="text-xs text-gray-500">{((count / messages.length) * 100).toFixed(1)}%</div>
+							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
+								<div className="text-sm text-gray-500 mb-1">Sensor Type</div>
+								<div className="text-lg font-semibold text-gray-900 dark:text-gray-100">{messages[0]?.sensor}</div>
+							</div>
+							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
+								<div className="text-sm text-gray-500 mb-1">Monitoring</div>
+								<div className="space-y-1">
+									<div className="text-xs">
+										{messages[messages.length - 1]?.enabled ? (
+											<span className="text-green-500 font-medium">✓ Sensor Active</span>
+										) : (
+											<span className="text-red-500 font-medium">✗ Sensor Inactive</span>
+										)}
 									</div>
-								))}
+									<div className="text-xs">
+										{messages[messages.length - 1]?.alertsEnabled ? (
+											<span className="text-green-500 font-medium">🔔 Alerts On</span>
+										) : (
+											<span className="text-yellow-500 font-medium">🔕 Alerts Off</span>
+										)}
+									</div>
+								</div>
+							</div>
+							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
+								<div className="text-sm text-gray-500 mb-1">Total Readings</div>
+								<div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{messages.length}</div>
+							</div>
+						</div>
+
+						<div className="grid grid-cols-1 gap-6">
+							{/* Level Statistics */}
+							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+								<h3 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100 mb-4">
+									<Gauge className="h-4 w-4 text-blue-500" />
+									Level Statistics
+								</h3>
+								<div className="grid grid-cols-3 gap-3">
+									<div className="text-center p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+										<div className="text-sm text-gray-500 mb-1">Average</div>
+										<div className="text-lg font-bold text-blue-500">{levelStats.avg.toFixed(0)}</div>
+										<div className="text-xs text-gray-500">{levelStats.avgPercentage.toFixed(1)}%</div>
+									</div>
+									<div className="text-center p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
+										<div className="text-sm text-gray-500 mb-1">Minimum</div>
+										<div className="text-lg font-bold text-green-500">{levelStats.min}</div>
+										<div className="text-xs text-gray-500">{((levelStats.min / capacity) * 100).toFixed(1)}%</div>
+									</div>
+									<div className="text-center p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+										<div className="text-sm text-gray-500 mb-1">Maximum</div>
+										<div className="text-lg font-bold text-purple-500">{levelStats.max}</div>
+										<div className="text-xs text-gray-500">{((levelStats.max / capacity) * 100).toFixed(1)}%</div>
+									</div>
+								</div>
+							</div>
+
+							{/* Status Distribution */}
+							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+								<h3 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100 mb-4">
+									<AlertTriangle className="h-4 w-4 text-orange-500" />
+									Status Distribution
+								</h3>
+								<div className="grid grid-cols-2 gap-3">
+									{Object.entries(statusCounts).map(([status, count]) => (
+										<div key={status} className="p-3 rounded-lg text-center border border-gray-100 dark:border-gray-800">
+											<div className="flex items-center justify-center gap-2 mb-2">
+												{getStatusIcon(status)}
+												<div className="text-sm font-medium capitalize text-gray-900 dark:text-gray-100">{status}</div>
+											</div>
+											<div className="text-xl font-bold" style={{ color: getStatusColor(status) }}>
+												{count}
+											</div>
+											<div className="text-xs text-gray-500">{((count / messages.length) * 100).toFixed(1)}%</div>
+										</div>
+									))}
+								</div>
 							</div>
 						</div>
 					</div>
+
 				</div>
 			</DialogContent>
 		</Dialog>
