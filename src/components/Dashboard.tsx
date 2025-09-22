@@ -5,10 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Activity, Thermometer, Droplets, Zap, Power, Wifi, WifiOff } from "lucide-react"
 import { PowerSensorType, SwitchSensorType, TemperatureSensorType, WaterSensorType } from "@/types/sensor-types"
-import SwitchControlCard from "./SwitchControlCard"
 import TemperatureCard from "./TemperatureCard"
 import WaterCard from "./WaterCard"
 import PowerCard from "./PowerCard"
+import SensorCard from "./SensorCard"
+import SwitchInfo from "./switch/SwitchInfo"
+import SwitchVisualization from "./switch/SwitchVisualization"
 
 export default function Dashboard() {
 	const [isConnected, setIsConnected] = useState(false)
@@ -107,7 +109,10 @@ export default function Dashboard() {
 				</Card>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-					<SwitchControlCard switchData={switchData} />
+					<SensorCard title="Switch  Sensor">
+						<SwitchInfo switchData={switchData} />
+						<SwitchVisualization />
+					</SensorCard>
 					<TemperatureCard temperatureData={temperatureData} />
 					<WaterCard waterLevelData={waterLevelData} />
 					<PowerCard powerData={powerData} />
