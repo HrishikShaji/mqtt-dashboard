@@ -91,25 +91,13 @@ export default function Dashboard() {
 	}, [])
 
 	return (
-		<div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
+		<div className="min-h-screen  bg-background p-4 md:p-6 lg:p-8">
 			<div className="max-w-7xl mx-auto space-y-8">
 				{/* Header */}
-				<div className="text-center space-y-2">
+				<div className="text-center space-y-2 w-full flex justify-between items-center">
 					<h1 className="text-4xl font-bold tracking-tight text-balance">IoT Monitoring Dashboard</h1>
-					<p className="text-muted-foreground text-lg">Real-time sensor data and system monitoring</p>
+					{isConnected ? <Wifi className="h-5 w-5 text-green-600" /> : <WifiOff className="h-5 w-5 text-red-600" />}
 				</div>
-
-				{/* Connection Status */}
-				<Card className="border-2">
-					<CardContent className="pt-6">
-						<div className="flex items-center justify-center gap-3">
-							{isConnected ? <Wifi className="h-5 w-5 text-green-600" /> : <WifiOff className="h-5 w-5 text-red-600" />}
-							<Badge variant={isConnected ? "default" : "destructive"} className="text-sm px-3 py-1">
-								{connectionStatus}
-							</Badge>
-						</div>
-					</CardContent>
-				</Card>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 					<SensorCard

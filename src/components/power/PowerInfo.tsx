@@ -20,7 +20,7 @@ export default function PowerInfo({ powerData }: Props) {
 	return (
 		<div className="h-[200px] flex flex-col justify-between space-y-4">
 			<div className="flex items-center justify-center">
-				<Zap className="h-6 w-6 text-yellow-500" />
+				<Zap className="h-6 w-6 " />
 			</div>
 
 			<div className="flex-1 space-y-3">
