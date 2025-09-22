@@ -11,7 +11,7 @@ import { useSidebar } from "./ui/sidebar";
 import TemperatureChart from "./TemperatureChart";
 
 interface Props {
-	temperatureData: TemperatureSensorType;
+	temperatureData: TemperatureSensorType | null;
 }
 
 export default function TemperatureCard({ temperatureData }: Props) {

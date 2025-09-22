@@ -9,7 +9,7 @@ import app from "@/lib/firebase";
 import SwitchChart from "./SwitchChart";
 
 interface Props {
-	switchData: SwitchSensorType;
+	switchData: SwitchSensorType | null;
 }
 
 export default function SwitchControlCard({ switchData }: Props) {

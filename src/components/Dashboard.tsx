@@ -9,34 +9,24 @@ import SwitchControlCard from "./SwitchControlCard"
 import TemperatureCard from "./TemperatureCard"
 import WaterCard from "./WaterCard"
 import PowerCard from "./PowerCard"
-import { ref, onValue, off, query, orderByChild, limitToLast, getDatabase } from 'firebase/database';
-import app from '@/lib/firebase';
 
 export default function Dashboard() {
-	const [client, setClient] = useState<MqttClient | null>(null)
 	const [isConnected, setIsConnected] = useState(false)
 	const [connectionStatus, setConnectionStatus] = useState("Disconnected")
 
-	// Sensor data states
 	const [switchData, setSwitchData] = useState<SwitchSensorType | null>(null)
 	const [temperatureData, setTemperatureData] = useState<TemperatureSensorType | null>(null)
 	const [waterLevelData, setWaterLevelData] = useState<WaterSensorType | null>(null)
 	const [powerData, setPowerData] = useState<PowerSensorType | null>(null)
-	const [messages, setMessages] = useState([]);
-	const [topicData, setTopicData] = useState({});
-	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		// Connect to MQTT broker via WebSocket
 		const mqttClient = mqtt.connect("ws://localhost:8883")
 
 		mqttClient.on("connect", () => {
 			console.log("Dashboard connected to MQTT broker")
 			setIsConnected(true)
 			setConnectionStatus("Connected")
-			setClient(mqttClient)
 
-			// Subscribe to all sensor topics
 			const topics = ["switch/state", "sensors/temperature", "sensors/waterlevel", "sensors/power"]
 			topics.forEach((topic) => {
 				mqttClient.subscribe(topic, (err) => {
@@ -54,7 +44,6 @@ export default function Dashboard() {
 				const data = JSON.parse(message.toString())
 				console.log("Received message:", { topic, data })
 
-				// Route messages to appropriate state
 				switch (topic) {
 					case "switch/state":
 						setSwitchData(data)
@@ -96,40 +85,6 @@ export default function Dashboard() {
 		}
 	}, [])
 
-
-	useEffect(() => {
-		// Listen to latest 50 messages
-		const database = getDatabase(app);
-		const messagesRef = ref(database, 'messages');
-		const messagesQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(50));
-
-		const unsubscribeMessages = onValue(messagesQuery, (snapshot) => {
-			const data = snapshot.val();
-			if (data) {
-				const messageArray = Object.entries(data).map(([key, value]: any[]) => ({
-					id: key,
-					...value
-				})).sort((a, b) => b.timestamp - a.timestamp);
-				setMessages(messageArray);
-			}
-			setLoading(false);
-		});
-
-		// Listen to topics for latest values
-		const topicsRef = ref(database, 'topics');
-		const unsubscribeTopics = onValue(topicsRef, (snapshot) => {
-			const data = snapshot.val();
-			if (data) {
-				setTopicData(data);
-			}
-		});
-
-		return () => {
-			off(messagesRef, 'value', unsubscribeMessages);
-			off(topicsRef, 'value', unsubscribeTopics);
-		};
-	}, []);
-
 	return (
 		<div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
 			<div className="max-w-7xl mx-auto space-y-8">
@@ -151,20 +106,11 @@ export default function Dashboard() {
 					</CardContent>
 				</Card>
 
-				{/* Sensor Cards Grid */}
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-					{/* Switch Control Card */}
-					{switchData &&
-						<SwitchControlCard switchData={switchData} />}
-					{/* Temperature Card */}
-					{temperatureData &&
-						<TemperatureCard temperatureData={temperatureData} />}
-					{/* Water Level Card */}
-					{waterLevelData &&
-						<WaterCard waterLevelData={waterLevelData} />}
-					{/* Power Monitoring Card */}
-					{powerData &&
-						<PowerCard powerData={powerData} />}
+					<SwitchControlCard switchData={switchData} />
+					<TemperatureCard temperatureData={temperatureData} />
+					<WaterCard waterLevelData={waterLevelData} />
+					<PowerCard powerData={powerData} />
 				</div>
 
 			</div>

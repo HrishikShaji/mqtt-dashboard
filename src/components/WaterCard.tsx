@@ -11,7 +11,7 @@ import app from "@/lib/firebase";
 import WaterChart from "./WaterChart";
 
 interface Props {
-	waterLevelData: WaterSensorType;
+	waterLevelData: WaterSensorType | null;
 }
 
 export default function WaterCard({ waterLevelData }: Props) {

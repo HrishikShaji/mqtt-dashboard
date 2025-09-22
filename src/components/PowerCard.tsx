@@ -10,7 +10,7 @@ import app from "@/lib/firebase";
 import PowerChart from "./PowerChart";
 
 interface Props {
-	powerData: PowerSensorType;
+	powerData: PowerSensorType | null;
 }
 
 export default function PowerCard({ powerData }: Props) {
