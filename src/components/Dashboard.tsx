@@ -5,12 +5,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Activity, Thermometer, Droplets, Zap, Power, Wifi, WifiOff } from "lucide-react"
 import { PowerSensorType, SwitchSensorType, TemperatureSensorType, WaterSensorType } from "@/types/sensor-types"
-import TemperatureCard from "./TemperatureCard"
-import WaterCard from "./WaterCard"
-import PowerCard from "./PowerCard"
 import SensorCard from "./SensorCard"
 import SwitchInfo from "./switch/SwitchInfo"
 import SwitchVisualization from "./switch/SwitchVisualization"
+import TemperatureInfo from "./temperature/TemperatureInfo"
+import TemperatureVisualization from "./temperature/TemperatureVisualization"
+import WaterInfo from "./water/WaterInfo"
+import WaterVisualization from "./water/WaterVisualization"
+import PowerInfo from "./power/PowerInfo"
+import PowerVisualization from "./power/PowerVisualization"
 
 export default function Dashboard() {
 	const [isConnected, setIsConnected] = useState(false)
@@ -113,9 +116,18 @@ export default function Dashboard() {
 						<SwitchInfo switchData={switchData} />
 						<SwitchVisualization />
 					</SensorCard>
-					<TemperatureCard temperatureData={temperatureData} />
-					<WaterCard waterLevelData={waterLevelData} />
-					<PowerCard powerData={powerData} />
+					<SensorCard title="Temperature Sensor">
+						<TemperatureInfo temperatureData={temperatureData} />
+						<TemperatureVisualization />
+					</SensorCard>
+					<SensorCard title="Water Sensor">
+						<WaterInfo waterLevelData={waterLevelData} />
+						<WaterVisualization />
+					</SensorCard>
+					<SensorCard title="Power Sensor">
+						<PowerInfo powerData={powerData} />
+						<PowerVisualization />
+					</SensorCard>
 				</div>
 
 			</div>
