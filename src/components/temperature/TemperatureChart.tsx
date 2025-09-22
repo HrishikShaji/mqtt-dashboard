@@ -1,5 +1,5 @@
 import { Area, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Line, LineChart, Legend } from "recharts"
-import { Thermometer, Droplets } from "lucide-react"
+import { Thermometer, Droplets, BarChartIcon } from "lucide-react"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import type { TemperatureSensorType } from "@/types/sensor-types"
 
@@ -75,9 +75,8 @@ export default function TemperatureChart({ messages }: Props) {
 
 	return (
 		<Dialog>
-			<DialogTrigger className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 shadow-sm">
-				<Thermometer className="h-4 w-4" />
-				View Chart
+			<DialogTrigger className="rounded-md border-1 hover:bg-black hover:text-white p-1 cursor-pointer">
+				<BarChartIcon size={20} />
 			</DialogTrigger>
 			<DialogContent className="min-w-[90vw]  max-h-[90vh] overflow-y-auto">
 				<DialogTitle className="flex gap-3 items-center text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">

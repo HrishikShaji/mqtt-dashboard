@@ -112,21 +112,29 @@ export default function Dashboard() {
 				</Card>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-					<SensorCard title="Switch  Sensor">
+					<SensorCard
+						title="Switch  Sensor"
+						icon={<SwitchVisualization />}
+					>
 						<SwitchInfo switchData={switchData} />
-						<SwitchVisualization />
 					</SensorCard>
-					<SensorCard title="Temperature Sensor">
+					<SensorCard
+						title="Temperature Sensor"
+						icon={<TemperatureVisualization />}
+					>
 						<TemperatureInfo temperatureData={temperatureData} />
-						<TemperatureVisualization />
 					</SensorCard>
-					<SensorCard title="Water Sensor">
+					<SensorCard
+						title="Water Sensor"
+						icon={<WaterVisualization />}
+					>
 						<WaterInfo waterLevelData={waterLevelData} />
-						<WaterVisualization />
 					</SensorCard>
-					<SensorCard title="Power Sensor">
+					<SensorCard
+						title="Power Sensor"
+						icon={<PowerVisualization />}
+					>
 						<PowerInfo powerData={powerData} />
-						<PowerVisualization />
 					</SensorCard>
 				</div>
 
