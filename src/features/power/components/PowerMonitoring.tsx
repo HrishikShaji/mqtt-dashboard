@@ -32,7 +32,7 @@ export default function PowerMonitoring() {
 					Power Monitoring Dashboard
 				</DialogTitle>
 				<div className="flex gap-5 h-full">
-					<div className="flex flex-col gap-5 flex-2/3 w-full h-full">
+					<div className="flex flex-col gap-5 flex-1 w-full h-full">
 						<Tabs defaultValue="power1">
 							<TabsList>
 								<TabsTrigger value="power1">Power</TabsTrigger>
@@ -46,11 +46,14 @@ export default function PowerMonitoring() {
 							</TabsContent>
 						</Tabs>
 					</div>
-					<PowerStatsTable
-						stats={stats}
-						powerQuality={powerQuality}
-						messages={messages}
-					/>
+					<div className='flex-1'>
+						<PowerStatsTable
+							stats={stats}
+							powerQuality={powerQuality}
+							messages={messages}
+						/>
+
+					</div>
 				</div>
 			</DialogContent>
 		</Dialog>

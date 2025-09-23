@@ -1,11 +1,10 @@
-import { SwitchSensorType, TemperatureSensorType, WaterSensorType } from "@/types/sensor-types";
+import { WaterSensorType } from "@/types/sensor-types";
 import { useEffect, useState } from "react";
 import { equalTo, getDatabase, limitToLast, onValue, off, orderByChild, query, ref } from "firebase/database";
 import app from "@/lib/firebase";
-import WaterChart from "./WaterChart";
 
 
-export default function WaterVisualization() {
+export default function useWaterMonitoring() {
 	const [messages, setMessages] = useState<WaterSensorType[]>([])
 	useEffect(() => {
 		const database = getDatabase(app);
@@ -48,9 +47,6 @@ export default function WaterVisualization() {
 			off(messagesRef, 'value', unsubscribeMessages);
 		};
 	}, []);
-	return (
-		<WaterChart
-			messages={messages}
-		/>
-	)
+
+	return { messages }
 }

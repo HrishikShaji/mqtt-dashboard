@@ -10,10 +10,10 @@ import SwitchInfo from "./switch/SwitchInfo"
 import SwitchVisualization from "./switch/SwitchVisualization"
 import TemperatureInfo from "./temperature/TemperatureInfo"
 import TemperatureVisualization from "./temperature/TemperatureVisualization"
-import WaterInfo from "./water/WaterInfo"
-import WaterVisualization from "./water/WaterVisualization"
 import PowerMonitoring from "@/features/power/components/PowerMonitoring"
 import PowerInfo from "@/features/power/components/PowerInfo"
+import WaterMonitoring from "@/features/water/components/WaterMonitoring"
+import WaterInfo from "@/features/water/components/WaterInfo"
 
 export default function Dashboard() {
 	const [isConnected, setIsConnected] = useState(false)
@@ -114,7 +114,7 @@ export default function Dashboard() {
 					</SensorCard>
 					<SensorCard
 						title="Water Sensor"
-						icon={<WaterVisualization />}
+						icon={<WaterMonitoring />}
 					>
 						<WaterInfo waterLevelData={waterLevelData} />
 					</SensorCard>
