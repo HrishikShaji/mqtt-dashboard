@@ -14,6 +14,7 @@ import TemperatureMonitoring from "@/features/temperature/components/Temperature
 import TemperatureInfo from "@/features/temperature/components/TemperatureInfo"
 import SwitchMonitoring from "@/features/switch/components/SwitchMonitoring"
 import SwitchInfo from "@/features/switch/components/SwitchInfo"
+import { SERVER_URL } from "@/lib/variables"
 
 export default function Dashboard() {
 	const [isConnected, setIsConnected] = useState(false)
@@ -25,7 +26,7 @@ export default function Dashboard() {
 	const [powerData, setPowerData] = useState<PowerSensorType | null>(null)
 
 	useEffect(() => {
-		const mqttClient = mqtt.connect("ws://localhost:8883")
+		const mqttClient = mqtt.connect(SERVER_URL)
 
 		mqttClient.on("connect", () => {
 			console.log("Dashboard connected to MQTT broker")

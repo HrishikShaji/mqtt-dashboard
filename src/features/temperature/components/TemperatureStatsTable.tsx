@@ -185,7 +185,7 @@ export function TemperatureStatsTable({ messages }: TemperatureStatsTableProps) 
 						<td className="px-2 py-1 text-muted-foreground">Monitoring</td>
 						<td className="px-2 py-1 font-medium">{last.enabled ? "Active" : "Inactive"}</td>
 						<td className="px-2 py-1 text-muted-foreground">
-							Alerts: {last.alertsEnabled ? "Enabled" : "Disabled"}
+							{/* Alerts: {last.alertsEnabled ? "Enabled" : "Disabled"} */}
 						</td>
 					</tr>
 					<tr className="border-t border-border">
