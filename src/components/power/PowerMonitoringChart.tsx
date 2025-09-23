@@ -11,6 +11,7 @@ import { PowerChart } from './PowerChart';
 import { QualityChart } from './QualityChart';
 import { StatisticsTable } from './StatisticsTable';
 import { PowerMonitoringData } from '@/types/power-sensor-types';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 
 interface Props {
 	messages: PowerMonitoringData[];
@@ -32,11 +33,20 @@ export default function PowerMonitoringChart({ messages }: Props) {
 					<Activity className="h-5 w-5 text-blue-500" />
 					Power Monitoring Dashboard
 				</DialogTitle>
-
 				<div className="flex gap-5 h-full">
-					<div className="flex gap-5 flex-2/3 w-full h-full">
-						<PowerChart data={chartData} />
-						<QualityChart data={chartData} />
+					<div className="flex flex-col gap-5 flex-2/3 w-full h-full">
+						<Tabs defaultValue="power">
+							<TabsList>
+								<TabsTrigger value="power">Power</TabsTrigger>
+								<TabsTrigger value="quality">Quality</TabsTrigger>
+							</TabsList>
+							<TabsContent value="power">
+								<PowerChart data={chartData} />
+							</TabsContent>
+							<TabsContent value="quality">
+								<QualityChart data={chartData} />
+							</TabsContent>
+						</Tabs>
 					</div>
 					<StatisticsTable
 						stats={stats}
