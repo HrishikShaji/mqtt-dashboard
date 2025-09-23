@@ -2,7 +2,7 @@ import { PowerSensorType, SwitchSensorType, TemperatureSensorType } from "@/type
 import { useEffect, useState } from "react";
 import { equalTo, getDatabase, limitToLast, onValue, off, orderByChild, query, ref } from "firebase/database";
 import app from "@/lib/firebase";
-import PowerChart from "./PowerChart";
+import PowerMonitoringChart from "./PowerMonitoringChart";
 
 
 export default function PowerVisualization() {
@@ -49,6 +49,6 @@ export default function PowerVisualization() {
 		};
 	}, []);
 	return (
-		<PowerChart messages={messages} />
+		<PowerMonitoringChart messages={messages} />
 	)
 }
