@@ -1,5 +1,5 @@
 import React from 'react';
-import { PowerStats, PowerQuality, PowerMonitoringData } from '../../types/power-sensor-types';
+import { PowerStats, PowerQuality, PowerMonitoringData } from '../types/power-sensor-types';
 import { fmt } from '@/lib/power-utils';
 
 interface StatisticsTableProps {

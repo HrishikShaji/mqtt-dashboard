@@ -12,8 +12,8 @@ import TemperatureInfo from "./temperature/TemperatureInfo"
 import TemperatureVisualization from "./temperature/TemperatureVisualization"
 import WaterInfo from "./water/WaterInfo"
 import WaterVisualization from "./water/WaterVisualization"
-import PowerInfo from "./power/PowerInfo"
-import PowerVisualization from "./power/PowerVisualization"
+import PowerMonitoring from "@/features/power/components/PowerMonitoring"
+import PowerInfo from "@/features/power/components/PowerInfo"
 
 export default function Dashboard() {
 	const [isConnected, setIsConnected] = useState(false)
@@ -120,7 +120,7 @@ export default function Dashboard() {
 					</SensorCard>
 					<SensorCard
 						title="Power Sensor"
-						icon={<PowerVisualization />}
+						icon={<PowerMonitoring />}
 					>
 						<PowerInfo powerData={powerData} />
 					</SensorCard>

@@ -6,18 +6,16 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { transformToChartData, calculateStats, getPowerQuality } from '../../lib/power-utils';
+import { transformToChartData, calculateStats, getPowerQuality } from '../lib/utils';
 import { PowerChart } from './PowerChart';
 import { QualityChart } from './QualityChart';
 import { StatisticsTable } from './StatisticsTable';
-import { PowerMonitoringData } from '@/types/power-sensor-types';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import usePowerSensorData from '../hooks/usePowerSensorData';
 
-interface Props {
-	messages: PowerMonitoringData[];
-}
 
-export default function PowerMonitoringChart({ messages }: Props) {
+export default function PowerMonitoring() {
+	const { messages } = usePowerSensorData()
 	const chartData = transformToChartData(messages);
 	const stats = calculateStats(messages);
 	const powerQuality = getPowerQuality(stats);

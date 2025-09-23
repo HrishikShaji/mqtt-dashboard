@@ -1,11 +1,10 @@
-import { PowerSensorType, SwitchSensorType, TemperatureSensorType } from "@/types/sensor-types";
+import { PowerSensorType } from "@/types/sensor-types";
 import { useEffect, useState } from "react";
 import { equalTo, getDatabase, limitToLast, onValue, off, orderByChild, query, ref } from "firebase/database";
 import app from "@/lib/firebase";
-import PowerMonitoringChart from "./PowerMonitoringChart";
 
 
-export default function PowerVisualization() {
+export default function usePowerSensorData() {
 	const [messages, setMessages] = useState<PowerSensorType[]>([])
 	useEffect(() => {
 		const database = getDatabase(app);
@@ -48,7 +47,6 @@ export default function PowerVisualization() {
 			off(messagesRef, 'value', unsubscribeMessages);
 		};
 	}, []);
-	return (
-		<PowerMonitoringChart messages={messages} />
-	)
+
+	return { messages }
 }

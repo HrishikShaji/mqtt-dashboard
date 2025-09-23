@@ -1,4 +1,4 @@
-import { PowerChartDataPoint } from '@/types/power-sensor-types';
+import { PowerChartDataPoint } from '../types/power-sensor-types';
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine, ResponsiveContainer, Legend } from 'recharts';
 
