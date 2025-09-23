@@ -6,7 +6,7 @@ interface PowerChartProps {
 	data: PowerChartDataPoint[];
 }
 
-export function PowerChart({ data }: PowerChartProps) {
+export function PowerChart1({ data }: PowerChartProps) {
 	return (
 		<div className="bg-gray-50 w-full dark:bg-gray-900/50 rounded-xl p-6 mb-6">
 			<div className="h-[400px] w-full">

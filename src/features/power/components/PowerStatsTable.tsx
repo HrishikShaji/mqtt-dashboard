@@ -8,7 +8,7 @@ interface StatisticsTableProps {
 	messages: PowerMonitoringData[];
 }
 
-export function StatisticsTable({ stats, powerQuality, messages }: StatisticsTableProps) {
+export function PowerStatsTable({ stats, powerQuality, messages }: StatisticsTableProps) {
 	const last = messages[messages.length - 1] ?? {};
 	const first = messages[0] ?? {};
 

@@ -6,7 +6,7 @@ interface QualityChartProps {
 	data: PowerChartDataPoint[];
 }
 
-export function QualityChart({ data }: QualityChartProps) {
+export function PowerChart2({ data }: QualityChartProps) {
 	return (
 		<div className="w-full bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6 mb-6">
 			<div className="h-[400px] w-full">

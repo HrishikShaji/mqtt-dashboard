@@ -7,11 +7,11 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { transformToChartData, calculateStats, getPowerQuality } from '../lib/utils';
-import { PowerChart } from './PowerChart';
-import { QualityChart } from './QualityChart';
-import { StatisticsTable } from './StatisticsTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import usePowerSensorData from '../hooks/usePowerSensorData';
+import { PowerChart1 } from './PowerChart1';
+import { PowerChart2 } from './PowerChart2';
+import { PowerStatsTable } from './PowerStatsTable';
 
 
 export default function PowerMonitoring() {
@@ -33,20 +33,20 @@ export default function PowerMonitoring() {
 				</DialogTitle>
 				<div className="flex gap-5 h-full">
 					<div className="flex flex-col gap-5 flex-2/3 w-full h-full">
-						<Tabs defaultValue="power">
+						<Tabs defaultValue="power1">
 							<TabsList>
-								<TabsTrigger value="power">Power</TabsTrigger>
-								<TabsTrigger value="quality">Quality</TabsTrigger>
+								<TabsTrigger value="power1">Power</TabsTrigger>
+								<TabsTrigger value="power2">Quality</TabsTrigger>
 							</TabsList>
-							<TabsContent value="power">
-								<PowerChart data={chartData} />
+							<TabsContent value="power1">
+								<PowerChart1 data={chartData} />
 							</TabsContent>
-							<TabsContent value="quality">
-								<QualityChart data={chartData} />
+							<TabsContent value="power2">
+								<PowerChart2 data={chartData} />
 							</TabsContent>
 						</Tabs>
 					</div>
-					<StatisticsTable
+					<PowerStatsTable
 						stats={stats}
 						powerQuality={powerQuality}
 						messages={messages}
