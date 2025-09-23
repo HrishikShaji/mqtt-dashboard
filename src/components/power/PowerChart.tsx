@@ -24,7 +24,9 @@ interface PowerMonitoringData {
 interface Props {
 	messages: PowerMonitoringData[];
 }
-
+function fmt(n: number, d = 0) {
+	return Number.isFinite(n) ? n.toFixed(d) : "—"
+}
 export default function PowerMonitoringChart({ messages }: Props) {
 	const chartData = messages
 		.map((item) => {
@@ -94,7 +96,12 @@ export default function PowerMonitoringChart({ messages }: Props) {
 			max: frequencies.length > 0 ? Math.max(...frequencies) : 0,
 		},
 	}
-
+	const last = messages[messages.length - 1] ?? {}
+	const first = messages[0] ?? {}
+	const voltageDev = (stats.voltage.max - stats.voltage.min) / 2
+	const currentDev = (stats.current.max - stats.current.min) / 2
+	const freqDev = (stats.frequency.max - stats.frequency.min) / 2
+	const apparentPower = stats.voltage.avg * stats.current.avg
 	// Power quality assessment with safety checks
 	const getPowerQuality = () => {
 		const avgPF = stats.powerFactor.avg || 0
@@ -371,131 +378,88 @@ export default function PowerMonitoringChart({ messages }: Props) {
 						</div>
 
 					</div>
-					<div className="flex-1/3 space-y-6 h-[400px] overflow-y-auto">
-						{/* Power Quality Overview */}
-						<div className="grid grid-cols-2 gap-4">
-							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
-								<div className="text-sm text-gray-500 mb-1">Current Load</div>
-								<div className="text-2xl font-bold text-green-500 mb-1">{stats.power.avg.toFixed(0)}W</div>
-								<div className="text-sm text-gray-500">{(stats.voltage.avg * stats.current.avg).toFixed(0)}VA</div>
-							</div>
-							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
-								<div className="text-sm text-gray-500 mb-1">Power Quality</div>
-								<div className="flex items-center justify-center gap-2 mt-1">
-									<powerQuality.icon className="h-4 w-4" style={{ color: powerQuality.color }} />
-									<span className="font-bold" style={{ color: powerQuality.color }}>
-										{powerQuality.status}
-									</span>
-								</div>
-							</div>
-							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
-								<div className="text-sm text-gray-500 mb-1">Avg Power Factor</div>
-								<div className="text-2xl font-bold text-red-500 mb-1">{stats.powerFactor.avg.toFixed(3)}</div>
-								<div className="text-sm text-gray-500">{(stats.powerFactor.avg * 100).toFixed(1)}% efficient</div>
-							</div>
-							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
-								<div className="text-sm text-gray-500 mb-1">System Info</div>
-								<div className="font-semibold text-gray-900 dark:text-gray-100">
-									{messages[0]?.phase || "Single"} Phase
-								</div>
-								<div className="text-sm text-gray-500">{messages[0]?.sensor || "Power Meter"}</div>
-							</div>
-							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
-								<div className="text-sm text-gray-500 mb-1">Status</div>
-								<div className="space-y-1">
-									<div className="text-xs">
-										{messages[messages.length - 1]?.enabled ? (
-											<span className="text-green-500 font-medium">✓ Meter Active</span>
-										) : (
-											<span className="text-red-500 font-medium">✗ Meter Inactive</span>
-										)}
-									</div>
-									<div className="text-xs">
-										{messages[messages.length - 1]?.monitoring ? (
-											<span className="text-green-500 font-medium">📊 Monitoring</span>
-										) : (
-											<span className="text-red-500 font-medium">🚫 Not Monitoring</span>
-										)}
-									</div>
-								</div>
-							</div>
-						</div>
 
-						<div className="grid grid-cols-1 gap-6">
-							{/* Electrical Parameters */}
-							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
-								<h3 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100 mb-4">
-									<Zap className="h-4 w-4 text-blue-500" />
-									Electrical Parameters
-								</h3>
-								<div className="space-y-3">
-									<div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-										<div className="text-sm text-gray-500 mb-1">Voltage (V)</div>
-										<div className="text-lg font-bold text-blue-500">
-											{stats.voltage.avg.toFixed(1)} ± {((stats.voltage.max - stats.voltage.min) / 2).toFixed(1)}
-										</div>
-										<div className="text-xs text-gray-500">
-											{stats.voltage.min.toFixed(1)} - {stats.voltage.max.toFixed(1)}
-										</div>
-									</div>
-									<div className="p-3 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
-										<div className="text-sm text-gray-500 mb-1">Current (A)</div>
-										<div className="text-lg font-bold text-yellow-500">
-											{stats.current.avg.toFixed(2)} ± {((stats.current.max - stats.current.min) / 2).toFixed(2)}
-										</div>
-										<div className="text-xs text-gray-500">
-											{stats.current.min.toFixed(2)} - {stats.current.max.toFixed(2)}
-										</div>
-									</div>
-								</div>
-							</div>
+					<div className="rounded-md border border-border bg-card text-card-foreground">
+						<table className="w-full text-xs">
+							<thead className="bg-muted/50 text-muted-foreground">
+								<tr className="text-left">
+									<th className="px-2 py-1 font-medium">Metric</th>
+									<th className="px-2 py-1 font-medium">Value</th>
+									<th className="px-2 py-1 font-medium">Details</th>
+								</tr>
+							</thead>
+							<tbody>
+								{/* Overview */}
+								<tr className="border-t border-border">
+									<td className="px-2 py-1 text-muted-foreground">Current Load</td>
+									<td className="px-2 py-1 font-medium">{fmt(stats.power.avg, 0)} W</td>
+									<td className="px-2 py-1 text-muted-foreground">Apparent: {fmt(apparentPower, 0)} VA</td>
+								</tr>
+								<tr className="border-t border-border">
+									<td className="px-2 py-1 text-muted-foreground">Power Quality</td>
+									<td className="px-2 py-1 font-medium">{powerQuality.status}</td>
+									<td className="px-2 py-1 text-muted-foreground">—</td>
+								</tr>
+								<tr className="border-t border-border">
+									<td className="px-2 py-1 text-muted-foreground">Avg Power Factor</td>
+									<td className="px-2 py-1 font-medium">{fmt(stats.powerFactor.avg, 3)}</td>
+									<td className="px-2 py-1 text-muted-foreground">
+										Range: {fmt(stats.powerFactor.min, 3)}–{fmt(stats.powerFactor.max, 3)}
+									</td>
+								</tr>
 
-							{/* Power Analysis */}
-							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
-								<h3 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100 mb-4">
-									<Gauge className="h-4 w-4 text-green-500" />
-									Power Analysis
-								</h3>
-								<div className="space-y-3">
-									<div className="p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
-										<div className="text-sm text-gray-500 mb-1">Active Power (W)</div>
-										<div className="text-lg font-bold text-green-500">{stats.power.avg.toFixed(0)}</div>
-										<div className="text-xs text-gray-500">
-											{stats.power.min} - {stats.power.max}
-										</div>
-									</div>
-									<div className="p-3 bg-red-50 dark:bg-red-950/20 rounded-lg">
-										<div className="text-sm text-gray-500 mb-1">Power Factor</div>
-										<div className="text-lg font-bold text-red-500">{stats.powerFactor.avg.toFixed(3)}</div>
-										<div className="text-xs text-gray-500">
-											{stats.powerFactor.min.toFixed(3)} - {stats.powerFactor.max.toFixed(3)}
-										</div>
-									</div>
-								</div>
-							</div>
+								{/* Electrical Parameters */}
+								<tr className="border-t border-border">
+									<td className="px-2 py-1 text-muted-foreground">Voltage (V)</td>
+									<td className="px-2 py-1 font-medium">
+										{fmt(stats.voltage.avg, 1)} ± {fmt(voltageDev, 1)}
+									</td>
+									<td className="px-2 py-1 text-muted-foreground">
+										{fmt(stats.voltage.min, 1)}–{fmt(stats.voltage.max, 1)}
+									</td>
+								</tr>
+								<tr className="border-t border-border">
+									<td className="px-2 py-1 text-muted-foreground">Current (A)</td>
+									<td className="px-2 py-1 font-medium">
+										{fmt(stats.current.avg, 2)} ± {fmt(currentDev, 2)}
+									</td>
+									<td className="px-2 py-1 text-muted-foreground">
+										{fmt(stats.current.min, 2)}–{fmt(stats.current.max, 2)}
+									</td>
+								</tr>
 
-							{/* System Health */}
-							<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
-								<h3 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100 mb-4">
-									<Activity className="h-4 w-4 text-purple-500" />
-									System Health
-								</h3>
-								<div className="space-y-3">
-									<div className="p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-										<div className="text-sm text-gray-500 mb-1">Frequency (Hz)</div>
-										<div className="text-lg font-bold text-purple-500">{stats.frequency.avg.toFixed(2)}</div>
-										<div className="text-xs text-gray-500">
-											Variation: ±{((stats.frequency.max - stats.frequency.min) / 2).toFixed(2)}
-										</div>
-									</div>
-									<div className="p-3 bg-gray-50 dark:bg-gray-800/20 rounded-lg">
-										<div className="text-sm text-gray-500 mb-1">Total Readings</div>
-										<div className="text-lg font-bold text-gray-900 dark:text-gray-100">{messages.length}</div>
-										<div className="text-xs text-gray-500">Monitoring sessions</div>
-									</div>
-								</div>
-							</div>
-						</div>
+								{/* Power Analysis */}
+								<tr className="border-t border-border">
+									<td className="px-2 py-1 text-muted-foreground">Active Power (W)</td>
+									<td className="px-2 py-1 font-medium">{fmt(stats.power.avg, 0)}</td>
+									<td className="px-2 py-1 text-muted-foreground">
+										{fmt(stats.power.min, 0)}–{fmt(stats.power.max, 0)}
+									</td>
+								</tr>
+
+								{/* System Health */}
+								<tr className="border-t border-border">
+									<td className="px-2 py-1 text-muted-foreground">Frequency (Hz)</td>
+									<td className="px-2 py-1 font-medium">{fmt(stats.frequency.avg, 2)}</td>
+									<td className="px-2 py-1 text-muted-foreground">±{fmt(freqDev, 2)}</td>
+								</tr>
+								<tr className="border-t border-border">
+									<td className="px-2 py-1 text-muted-foreground">Phase</td>
+									<td className="px-2 py-1 font-medium">{first.phase || "Single"}</td>
+									<td className="px-2 py-1 text-muted-foreground">{first.sensor || "Power Meter"}</td>
+								</tr>
+								<tr className="border-t border-border">
+									<td className="px-2 py-1 text-muted-foreground">Meter</td>
+									<td className="px-2 py-1 font-medium">{last.enabled ? "Active" : "Inactive"}</td>
+									<td className="px-2 py-1 text-muted-foreground">Monitoring: {last.monitoring ? "Yes" : "No"}</td>
+								</tr>
+								<tr className="border-t border-border">
+									<td className="px-2 py-1 text-muted-foreground">Total Readings</td>
+									<td className="px-2 py-1 font-medium">{messages.length}</td>
+									<td className="px-2 py-1 text-muted-foreground">—</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 
 				</div>
