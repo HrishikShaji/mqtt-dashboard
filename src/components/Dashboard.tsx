@@ -6,14 +6,14 @@ import { Badge } from "@/components/ui/badge"
 import { Activity, Thermometer, Droplets, Zap, Power, Wifi, WifiOff } from "lucide-react"
 import { PowerSensorType, SwitchSensorType, TemperatureSensorType, WaterSensorType } from "@/types/sensor-types"
 import SensorCard from "./SensorCard"
-import SwitchInfo from "./switch/SwitchInfo"
-import SwitchVisualization from "./switch/SwitchVisualization"
 import PowerMonitoring from "@/features/power/components/PowerMonitoring"
 import PowerInfo from "@/features/power/components/PowerInfo"
 import WaterMonitoring from "@/features/water/components/WaterMonitoring"
 import WaterInfo from "@/features/water/components/WaterInfo"
 import TemperatureMonitoring from "@/features/temperature/components/TemperatureMonitoring"
 import TemperatureInfo from "@/features/temperature/components/TemperatureInfo"
+import SwitchMonitoring from "@/features/switch/components/SwitchMonitoring"
+import SwitchInfo from "@/features/switch/components/SwitchInfo"
 
 export default function Dashboard() {
 	const [isConnected, setIsConnected] = useState(false)
@@ -102,7 +102,7 @@ export default function Dashboard() {
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 					<SensorCard
 						title="Switch  Sensor"
-						icon={<SwitchVisualization />}
+						icon={<SwitchMonitoring />}
 					>
 						<SwitchInfo switchData={switchData} />
 					</SensorCard>

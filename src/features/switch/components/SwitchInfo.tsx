@@ -1,8 +1,8 @@
 import { Power } from "lucide-react"
-import { Badge } from "../ui/badge"
+import { Badge } from "@/components/ui/badge"
 import type { SwitchSensorType } from "@/types/sensor-types"
 import { formatTime, getStatusColor } from "@/lib/utils"
-import { Separator } from "../ui/separator"
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
 	switchData: SwitchSensorType | null

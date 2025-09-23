@@ -1,15 +1,10 @@
-import { Activity, Power } from "lucide-react";
-import { Badge } from "../ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { SwitchSensorType } from "@/types/sensor-types";
-import { formatTime } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { equalTo, getDatabase, off, limitToLast, onValue, orderByChild, query, ref } from "firebase/database";
 import app from "@/lib/firebase";
-import SwitchChart from "./SwitchChart";
 
 
-export default function SwitchVisualization() {
+export default function useSwitchMonitoring() {
 	const [messages, setMessages] = useState<SwitchSensorType[]>([])
 	useEffect(() => {
 		const database = getDatabase(app);
@@ -51,7 +46,5 @@ export default function SwitchVisualization() {
 		};
 	}, []);
 
-	return (
-		<SwitchChart messages={messages} />
-	)
+	return { messages }
 }
