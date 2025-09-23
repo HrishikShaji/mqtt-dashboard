@@ -1,11 +1,11 @@
+
 import { SwitchSensorType, TemperatureSensorType } from "@/types/sensor-types";
 import { useEffect, useState } from "react";
 import { equalTo, getDatabase, limitToLast, onValue, off, orderByChild, query, ref } from "firebase/database";
 import app from "@/lib/firebase";
-import TemperatureChart from "./TemperatureChart";
 
 
-export default function TemperatureVisualization() {
+export default function useTemperatureMonitoring() {
 	const [messages, setMessages] = useState<TemperatureSensorType[]>([])
 	useEffect(() => {
 		const database = getDatabase(app);
@@ -47,7 +47,6 @@ export default function TemperatureVisualization() {
 			off(messagesRef, 'value', unsubscribeMessages);
 		};
 	}, []);
-	return (
-		<TemperatureChart messages={messages} />
-	)
+
+	return { messages }
 }

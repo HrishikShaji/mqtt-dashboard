@@ -8,12 +8,12 @@ import { PowerSensorType, SwitchSensorType, TemperatureSensorType, WaterSensorTy
 import SensorCard from "./SensorCard"
 import SwitchInfo from "./switch/SwitchInfo"
 import SwitchVisualization from "./switch/SwitchVisualization"
-import TemperatureInfo from "./temperature/TemperatureInfo"
-import TemperatureVisualization from "./temperature/TemperatureVisualization"
 import PowerMonitoring from "@/features/power/components/PowerMonitoring"
 import PowerInfo from "@/features/power/components/PowerInfo"
 import WaterMonitoring from "@/features/water/components/WaterMonitoring"
 import WaterInfo from "@/features/water/components/WaterInfo"
+import TemperatureMonitoring from "@/features/temperature/components/TemperatureMonitoring"
+import TemperatureInfo from "@/features/temperature/components/TemperatureInfo"
 
 export default function Dashboard() {
 	const [isConnected, setIsConnected] = useState(false)
@@ -108,7 +108,7 @@ export default function Dashboard() {
 					</SensorCard>
 					<SensorCard
 						title="Temperature Sensor"
-						icon={<TemperatureVisualization />}
+						icon={<TemperatureMonitoring />}
 					>
 						<TemperatureInfo temperatureData={temperatureData} />
 					</SensorCard>

@@ -1,7 +1,7 @@
 import { Activity, Thermometer } from "lucide-react"
 import type { TemperatureSensorType } from "@/types/sensor-types"
 import { formatTime, getStatusColor } from "@/lib/utils"
-import { Separator } from "../ui/separator"
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
 	temperatureData: TemperatureSensorType | null
