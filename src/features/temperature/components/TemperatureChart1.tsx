@@ -25,7 +25,7 @@ export default function TemperatureChart1({ messages }: Props) {
 
 
 	return (
-		<div className="flex-1 bg-gray-50 w-full dark:bg-gray-900/50 rounded-xl p-6 mb-6">
+		<div className="flex-1 bg-neutral-900 w-full dark:bg-gray-900/50 rounded-xl p-6 mb-6">
 			<div className="h-[400px] w-full">
 				<ResponsiveContainer width="100%" height="100%">
 					<LineChart data={chartData} margin={{ top: 20, right: 60, left: 20, bottom: 20 }}>

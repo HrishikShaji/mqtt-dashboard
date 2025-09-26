@@ -101,9 +101,9 @@ export function TemperatureStatsTable({ messages }: TemperatureStatsTableProps) 
 	const primaryStatus = Object.entries(stats.statusCounts).sort(([, a], [, b]) => b - a)[0];
 
 	return (
-		<div className="rounded-md border border-border bg-card text-card-foreground">
-			<table className="w-full text-xs">
-				<thead className="bg-muted/50 text-muted-foreground">
+		<div className="rounded-md border border-border bg-transparent text-white overflow-hidden">
+			<table className="w-full text-xs overflow-hidden">
+				<thead className="bg-neutral-900 text-white">
 					<tr className="text-left">
 						<th className="px-2 py-1 font-medium">Metric</th>
 						<th className="px-2 py-1 font-medium">Value</th>

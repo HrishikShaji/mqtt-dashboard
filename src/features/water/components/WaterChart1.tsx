@@ -29,16 +29,16 @@ export default function WaterChart1({ messages }: Props) {
 	const capacity = messages[0]?.capacity || 1000
 
 	return (
-		<div className="bg-gray-50 w-full dark:bg-gray-900/50 rounded-xl p-6">
+		<div className="bg-neutral-900 w-full dark:bg-gray-900/50 rounded-xl p-6">
 			<div className="h-[400px] w-full">
 				<ResponsiveContainer width="100%" height="100%">
 					<AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-						<defs>
-							<linearGradient id="levelGradient" x1="0" y1="0" x2="0" y2="1">
-								<stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-								<stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05} />
-							</linearGradient>
-						</defs>
+						{/* <defs> */}
+						{/* 	<linearGradient id="levelGradient" x1="0" y1="0" x2="0" y2="1"> */}
+						{/* 		<stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} /> */}
+						{/* 		<stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05} /> */}
+						{/* 	</linearGradient> */}
+						{/* </defs> */}
 						<CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:stroke-gray-700" />
 						<XAxis
 							dataKey="time"

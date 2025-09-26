@@ -25,10 +25,10 @@ export default function PowerMonitoring() {
 			<DialogTrigger className="cursor-pointer hover:text-blue-500">
 				<BarChartIcon size={20} />
 			</DialogTrigger>
-			<DialogContent className="min-w-[90vw] max-h-[90vh] overflow-y-auto">
-				<DialogTitle className="flex gap-3 items-center text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
-					<Zap className="h-5 w-5 text-yellow-500" />
-					<Activity className="h-5 w-5 text-blue-500" />
+			<DialogContent className="min-w-[90vw]  max-h-[90vh] overflow-y-auto rounded-4xl bg-black/20 dark:bg-black/10 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-2xl shadow-black/10 dark:shadow-black/30">
+				<DialogTitle className="flex gap-3 items-center text-xl font-semibold text-white dark:text-gray-100 mb-6">
+					<Zap className="h-5 w-5 text-white" />
+					{/* <Activity className="h-5 w-5 text-blue-500" /> */}
 					Power Monitoring Dashboard
 				</DialogTitle>
 				<div className="flex gap-5 h-full">

@@ -24,7 +24,7 @@ export default function SwitchChart1({ messages }: Props) {
 
 
 	return (
-		<div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6 mb-6">
+		<div className=" rounded-xl bg-neutral-900 p-6 mb-6">
 			<div className="h-[300px] w-full">
 				<ResponsiveContainer width="100%" height="100%">
 					<AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
@@ -51,22 +51,12 @@ export default function SwitchChart1({ messages }: Props) {
 							stroke="#10b981"
 							strokeDasharray="3 3"
 							strokeOpacity={0.5}
-							label={{
-								value: "ON",
-								position: "insideTopRight",
-								style: { fill: "#10b981", fontSize: "10px", fontWeight: "500" },
-							}}
 						/>
 						<ReferenceLine
 							y={0}
 							stroke="#ef4444"
 							strokeDasharray="3 3"
 							strokeOpacity={0.5}
-							label={{
-								value: "OFF",
-								position: "insideBottomRight",
-								style: { fill: "#ef4444", fontSize: "10px", fontWeight: "500" },
-							}}
 						/>
 
 						<Area
