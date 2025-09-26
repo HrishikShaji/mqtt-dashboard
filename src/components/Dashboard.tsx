@@ -101,42 +101,54 @@ export default function Dashboard() {
 	}, [])
 
 	return (
-		<div className="min-h-screen  bg-background p-4 md:p-6 lg:p-8">
-			<div className="max-w-7xl mx-auto space-y-8">
-				{/* Header */}
-				<div className="text-center space-y-2 w-full flex justify-between items-center">
-					<h1 className="text-4xl font-bold tracking-tight text-balance">IoT Monitoring Dashboard</h1>
-					{isConnected ? <Wifi className="h-5 w-5 text-green-600" /> : <WifiOff className="h-5 w-5 text-red-600" />}
-				</div>
+		<div className="h-screen p-4 md:p-6 lg:p-8 relative"
+			style={{
+				backgroundImage: "url('/home_m_2.jpg')",
+				backgroundSize: 'cover',
+				backgroundRepeat: 'no-repeat',
+				backgroundPosition: 'center'
+			}}
+		>
+			<div className="text-center space-y-2 px-10  py-5  w-full flex left-0 top-0 justify-between absolute z-10 items-center">
+				<div className="text-left">
+					<h1 className="text-4xl font-bold  text-white">Trailer Dashboard</h1>
+					<p className="text-muted-foreground text-lg">View Trailer metrics</p>
 
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-					<SensorCard
-						title="Switch  Sensor"
-						icon={<SwitchMonitoring />}
-					>
-						<SwitchInfo switchData={switchData} />
-					</SensorCard>
-					<SensorCard
-						title="Temperature Sensor"
-						icon={<TemperatureMonitoring />}
-					>
-						<TemperatureInfo temperatureData={temperatureData} />
-					</SensorCard>
-					<SensorCard
-						title="Water Sensor"
-						icon={<WaterMonitoring />}
-					>
-						<WaterInfo waterLevelData={waterLevelData} />
-					</SensorCard>
-					<SensorCard
-						title="Power Sensor"
-						icon={<PowerMonitoring />}
-					>
-						<PowerInfo powerData={powerData} />
-					</SensorCard>
 				</div>
-
+				{isConnected ? <Wifi className="h-5 w-5 text-green-600" /> : <WifiOff className="h-5 w-5 text-red-600" />}
 			</div>
+			{/* Header */}
+
+			{/* Sensor Controls Grid */}
+			<div className="absolute top-0 left-0  bg-gradient-to-r from-black/50 to-black h-full w-full"></div>
+
+			<div className="absolute z-10 bottom-10 left-0 px-10 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+				<SensorCard
+					title="Switch  Sensor"
+					icon={<SwitchMonitoring />}
+				>
+					<SwitchInfo switchData={switchData} />
+				</SensorCard>
+				<SensorCard
+					title="Temperature Sensor"
+					icon={<TemperatureMonitoring />}
+				>
+					<TemperatureInfo temperatureData={temperatureData} />
+				</SensorCard>
+				<SensorCard
+					title="Water Sensor"
+					icon={<WaterMonitoring />}
+				>
+					<WaterInfo waterLevelData={waterLevelData} />
+				</SensorCard>
+				<SensorCard
+					title="Power Sensor"
+					icon={<PowerMonitoring />}
+				>
+					<PowerInfo powerData={powerData} />
+				</SensorCard>
+			</div>
+
 		</div>
 	)
 }

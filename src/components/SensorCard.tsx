@@ -10,9 +10,9 @@ interface Props {
 
 export default function SensorCard({ title, children, icon }: Props) {
 	return (
-		<Card className="relative overflow-hidden">
+		<Card className="relative overflow-hidden rounded-4xl bg-black/20 dark:bg-black/10 backdrop-blur-xl border border-white/20">
 			<CardHeader className="pb-3">
-				<CardTitle className="flex w-full justify-between items-center gap-2 text-lg">
+				<CardTitle className="flex w-full justify-between items-center gap-2 text-lg text-white">
 					{title}
 					{icon}
 				</CardTitle>

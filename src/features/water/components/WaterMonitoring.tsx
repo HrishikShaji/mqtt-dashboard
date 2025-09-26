@@ -11,7 +11,7 @@ export default function WaterMonitoring() {
 	const { messages } = useWaterMonitoring()
 	return (
 		<Dialog>
-			<DialogTrigger className="rounded-md border-1 hover:bg-black hover:text-white p-1 cursor-pointer">
+			<DialogTrigger className="cursor-pointer hover:text-blue-500">
 				<BarChartIcon size={20} />
 			</DialogTrigger>
 			<DialogContent className="min-w-[90vw] max-h-[90vh] overflow-y-auto">

@@ -20,7 +20,7 @@ export default function TemperatureInfo({ temperatureData }: Props) {
 	return (
 		<div className="h-[200px] flex flex-col justify-between space-y-4">
 			<div className="flex items-center justify-center">
-				<Thermometer className="h-6 w-6 " />
+				<Thermometer className="h-6 w-6 text-white" />
 			</div>
 
 			<div className="flex-1 flex flex-col justify-center space-y-2">

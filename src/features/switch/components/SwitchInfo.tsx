@@ -20,7 +20,7 @@ export default function SwitchInfo({ switchData }: Props) {
 
 	return (
 		<div className="h-[200px] flex flex-col justify-between space-y-4">
-			<div className="flex items-center justify-center">
+			<div className="flex items-center justify-center text-white">
 				<Power className="h-6 w-6 " />
 			</div>
 
@@ -28,7 +28,7 @@ export default function SwitchInfo({ switchData }: Props) {
 				<div className={`text-4xl font-bold ${getStatusColor(switchData.state ? 1 : 0, "switch")}`}>
 					{switchData.state ? "ON" : "OFF"}
 				</div>
-				<Badge variant="outline" className="text-xs">
+				<Badge variant="outline" className="text-xs text-white">
 					{switchData.device}
 				</Badge>
 			</div>
