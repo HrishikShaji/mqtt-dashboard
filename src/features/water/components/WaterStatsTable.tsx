@@ -176,7 +176,7 @@ export function WaterStatsTable({ messages }: WaterStatsTableProps) {
 
 	return (
 		<div className="rounded-md border border-border bg-transparent text-white overflow-hidden">
-			<table className="w-full text-xs">
+			<table className="w-full ">
 				<thead className="bg-neutral-900 text-white">
 					<tr className="text-left">
 						<th className="px-2 py-1 font-medium">Metric</th>
